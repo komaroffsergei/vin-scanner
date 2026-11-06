@@ -1,0 +1,1467 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 2
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "buildId": {
+      "type": "string",
+      "pattern": "^[a-z0-9._-]{1,100}$"
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "enum": [
+            "file:",
+            "https:",
+            "http:",
+            "content:",
+            "other"
+          ]
+        },
+        "secureContext": {
+          "type": "boolean"
+        },
+        "userAgent": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "viewportWidth": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "viewportHeight": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "hardwareConcurrency": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "protocol",
+        "secureContext",
+        "userAgent",
+        "viewportWidth",
+        "viewportHeight",
+        "hardwareConcurrency"
+      ]
+    },
+    "settings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "captureIntervalMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 60000
+        },
+        "sessionTimeoutSeconds": {
+          "type": "number",
+          "minimum": 0.1,
+          "maximum": 300
+        },
+        "image": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "maxDimension": {
+              "type": "integer",
+              "minimum": 32,
+              "maximum": 4096
+            },
+            "jpegQuality": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "maxBytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20000000
+            }
+          },
+          "required": [
+            "maxDimension",
+            "jpegQuality",
+            "maxBytes"
+          ]
+        }
+      },
+      "required": [
+        "captureIntervalMs",
+        "sessionTimeoutSeconds",
+        "image"
+      ]
+    },
+    "network": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "policy": {
+          "const": "same-origin-static-assets"
+        },
+        "virtualOperations": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "blobResourceReads": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "observedHttpAttempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "blockedAttempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "externalVerification": {
+          "enum": [
+            "not_performed",
+            "pass",
+            "fail"
+          ]
+        },
+        "evidenceSource": {
+          "enum": [
+            "application_only",
+            "browser_devtools",
+            "external_observer"
+          ]
+        },
+        "staticResourceRequests": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "policy",
+        "virtualOperations",
+        "blobResourceReads",
+        "observedHttpAttempts",
+        "blockedAttempts",
+        "externalVerification",
+        "evidenceSource",
+        "staticResourceRequests"
+      ]
+    },
+    "deviceChecks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9._-]{0,79}$"
+          },
+          "status": {
+            "enum": [
+              "pass",
+              "fail",
+              "blocked",
+              "untested",
+              "manual"
+            ]
+          },
+          "reasonCode": {
+            "enum": [
+              "ok",
+              "not_run",
+              "manual_required",
+              "api_missing",
+              "insecure_context",
+              "permission_denied",
+              "permission_pending",
+              "device_missing",
+              "camera_busy",
+              "playback_blocked",
+              "constraint_unsupported",
+              "asset_missing",
+              "asset_invalid",
+              "wasm_unsupported",
+              "worker_failed",
+              "initialization_timeout",
+              "engine_failed",
+              "frame_invalid",
+              "image_too_large",
+              "deadline",
+              "cancelled",
+              "superseded",
+              "late_result_ignored",
+              "manual_revision_changed",
+              "expected_simulation_failure",
+              "native_greedy_fallback",
+              "network_attempt_blocked",
+              "correlation_invalid",
+              "recognition_mismatch",
+              "canvas_worker_unavailable"
+            ]
+          },
+          "facts": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "width": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "height": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "bytes": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "elapsedMs": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "fps": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "count": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "supported": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "reasonCode",
+          "facts"
+        ]
+      }
+    },
+    "logicChecks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9._-]{0,79}$"
+          },
+          "status": {
+            "enum": [
+              "pass",
+              "fail",
+              "blocked",
+              "untested",
+              "manual"
+            ]
+          },
+          "reasonCode": {
+            "enum": [
+              "ok",
+              "not_run",
+              "manual_required",
+              "api_missing",
+              "insecure_context",
+              "permission_denied",
+              "permission_pending",
+              "device_missing",
+              "camera_busy",
+              "playback_blocked",
+              "constraint_unsupported",
+              "asset_missing",
+              "asset_invalid",
+              "wasm_unsupported",
+              "worker_failed",
+              "initialization_timeout",
+              "engine_failed",
+              "frame_invalid",
+              "image_too_large",
+              "deadline",
+              "cancelled",
+              "superseded",
+              "late_result_ignored",
+              "manual_revision_changed",
+              "expected_simulation_failure",
+              "native_greedy_fallback",
+              "network_attempt_blocked",
+              "correlation_invalid",
+              "recognition_mismatch",
+              "canvas_worker_unavailable"
+            ]
+          },
+          "facts": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "width": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "height": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "bytes": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "elapsedMs": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "fps": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "count": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "supported": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "reasonCode",
+          "facts"
+        ]
+      }
+    },
+    "engineChecks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9._-]{0,79}$"
+          },
+          "status": {
+            "enum": [
+              "pass",
+              "fail",
+              "blocked",
+              "untested",
+              "manual"
+            ]
+          },
+          "reasonCode": {
+            "enum": [
+              "ok",
+              "not_run",
+              "manual_required",
+              "api_missing",
+              "insecure_context",
+              "permission_denied",
+              "permission_pending",
+              "device_missing",
+              "camera_busy",
+              "playback_blocked",
+              "constraint_unsupported",
+              "asset_missing",
+              "asset_invalid",
+              "wasm_unsupported",
+              "worker_failed",
+              "initialization_timeout",
+              "engine_failed",
+              "frame_invalid",
+              "image_too_large",
+              "deadline",
+              "cancelled",
+              "superseded",
+              "late_result_ignored",
+              "manual_revision_changed",
+              "expected_simulation_failure",
+              "native_greedy_fallback",
+              "network_attempt_blocked",
+              "correlation_invalid",
+              "recognition_mismatch",
+              "canvas_worker_unavailable"
+            ]
+          },
+          "facts": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "width": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "height": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "bytes": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "elapsedMs": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "fps": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "count": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "supported": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "reasonCode",
+          "facts"
+        ]
+      }
+    },
+    "manualChecks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9._-]{0,79}$"
+          },
+          "status": {
+            "enum": [
+              "pass",
+              "fail",
+              "blocked",
+              "untested",
+              "manual"
+            ]
+          },
+          "reasonCode": {
+            "enum": [
+              "ok",
+              "not_run",
+              "manual_required",
+              "api_missing",
+              "insecure_context",
+              "permission_denied",
+              "permission_pending",
+              "device_missing",
+              "camera_busy",
+              "playback_blocked",
+              "constraint_unsupported",
+              "asset_missing",
+              "asset_invalid",
+              "wasm_unsupported",
+              "worker_failed",
+              "initialization_timeout",
+              "engine_failed",
+              "frame_invalid",
+              "image_too_large",
+              "deadline",
+              "cancelled",
+              "superseded",
+              "late_result_ignored",
+              "manual_revision_changed",
+              "expected_simulation_failure",
+              "native_greedy_fallback",
+              "network_attempt_blocked",
+              "correlation_invalid",
+              "recognition_mismatch",
+              "canvas_worker_unavailable"
+            ]
+          },
+          "facts": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "width": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "height": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "bytes": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "elapsedMs": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "fps": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "count": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "supported": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "reasonCode",
+          "facts"
+        ]
+      }
+    },
+    "runs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "runId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+          },
+          "mode": {
+            "enum": [
+              "mock",
+              "client"
+            ]
+          },
+          "engineId": {
+            "anyOf": [
+              {
+                "enum": [
+                  "paddle",
+                  "tesseract",
+                  "vin-scanner"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source": {
+            "enum": [
+              "camera-live",
+              "camera-frozen",
+              "synthetic"
+            ]
+          },
+          "frozenFrameId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "captureIntervalMs": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sessionTimeoutSeconds": {
+            "type": "number",
+            "minimum": 0.1,
+            "maximum": 300
+          },
+          "confidence": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "value": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "scale": {
+                "enum": [
+                  "0-1",
+                  "0-100",
+                  "unknown"
+                ]
+              }
+            },
+            "required": [
+              "value",
+              "scale"
+            ]
+          },
+          "profile": {
+            "enum": [
+              "virtual",
+              "generic-strict",
+              "native-full"
+            ]
+          },
+          "engineVersion": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9.+/_-]{1,100}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "modelHashes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "backend": {
+            "enum": [
+              "memory",
+              "wasm"
+            ]
+          },
+          "outcome": {
+            "enum": [
+              "Recognized",
+              "NoVin",
+              "TimedOut",
+              "LimitExceeded",
+              "Disabled",
+              "ProviderUnavailable",
+              "Cancelled",
+              "ImageResult",
+              "RequestRejected",
+              "FramePreparationError",
+              "EngineUnavailable",
+              "EngineError",
+              "InitializationTimeout",
+              "Pending"
+            ]
+          },
+          "formatValid": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "expectedMatch": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "positionMismatchCount": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 17
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "native": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "accepted": {
+                    "type": "boolean"
+                  },
+                  "tier": {
+                    "enum": [
+                      "A",
+                      "B",
+                      "C",
+                      null
+                    ]
+                  },
+                  "checkDigitOk": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "source": {
+                    "enum": [
+                      "auto",
+                      "manual",
+                      null
+                    ]
+                  },
+                  "decoder": {
+                    "enum": [
+                      "beam",
+                      "greedy",
+                      "unknown"
+                    ]
+                  }
+                },
+                "required": [
+                  "accepted",
+                  "tier",
+                  "checkDigitOk",
+                  "source",
+                  "decoder"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "metrics": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "initializationMs": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "framePreparationMs": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "firstInferenceMs": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "lastInferenceMs": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "totalMs": {
+                "type": "number",
+                "minimum": 0
+              },
+              "frames": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "sourceImageCount": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "maxInFlight": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "queueLength": {
+                "const": 0
+              }
+            },
+            "required": [
+              "initializationMs",
+              "framePreparationMs",
+              "firstInferenceMs",
+              "lastInferenceMs",
+              "totalMs",
+              "frames",
+              "sourceImageCount",
+              "maxInFlight",
+              "queueLength"
+            ]
+          },
+          "resultApplied": {
+            "type": "boolean"
+          },
+          "cleanupVerified": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "runId",
+          "mode",
+          "engineId",
+          "source",
+          "frozenFrameId",
+          "captureIntervalMs",
+          "sessionTimeoutSeconds",
+          "confidence",
+          "profile",
+          "engineVersion",
+          "modelHashes",
+          "backend",
+          "outcome",
+          "formatValid",
+          "expectedMatch",
+          "positionMismatchCount",
+          "native",
+          "metrics",
+          "resultApplied",
+          "cleanupVerified"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "mode": {
+                  "const": "mock"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "engineId": {
+                  "type": "null"
+                },
+                "profile": {
+                  "const": "virtual"
+                },
+                "backend": {
+                  "const": "memory"
+                },
+                "native": {
+                  "type": "null"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "engineId": {
+                  "enum": [
+                    "paddle",
+                    "tesseract",
+                    "vin-scanner"
+                  ]
+                },
+                "backend": {
+                  "const": "wasm"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "engineId": {
+                  "const": "vin-scanner"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "profile": {
+                  "const": "native-full"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "engineId": {
+                  "enum": [
+                    "paddle",
+                    "tesseract"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "profile": {
+                  "const": "generic-strict"
+                },
+                "native": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "anyOf": [
+                {
+                  "properties": {
+                    "source": {
+                      "const": "camera-frozen"
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "mode": {
+                      "const": "client"
+                    },
+                    "source": {
+                      "const": "synthetic"
+                    }
+                  }
+                }
+              ]
+            },
+            "then": {
+              "properties": {
+                "frozenFrameId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "frozenFrameId": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "atMs": {
+            "type": "number",
+            "minimum": 0
+          },
+          "code": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9._-]{0,79}$"
+          },
+          "runId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "engineId": {
+            "anyOf": [
+              {
+                "enum": [
+                  "paddle",
+                  "tesseract",
+                  "vin-scanner"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reasonCode": {
+            "anyOf": [
+              {
+                "enum": [
+                  "ok",
+                  "not_run",
+                  "manual_required",
+                  "api_missing",
+                  "insecure_context",
+                  "permission_denied",
+                  "permission_pending",
+                  "device_missing",
+                  "camera_busy",
+                  "playback_blocked",
+                  "constraint_unsupported",
+                  "asset_missing",
+                  "asset_invalid",
+                  "wasm_unsupported",
+                  "worker_failed",
+                  "initialization_timeout",
+                  "engine_failed",
+                  "frame_invalid",
+                  "image_too_large",
+                  "deadline",
+                  "cancelled",
+                  "superseded",
+                  "late_result_ignored",
+                  "manual_revision_changed",
+                  "expected_simulation_failure",
+                  "native_greedy_fallback",
+                  "network_attempt_blocked",
+                  "correlation_invalid",
+                  "recognition_mismatch",
+                  "canvas_worker_unavailable"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "count": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "atMs",
+          "code",
+          "runId",
+          "engineId",
+          "reasonCode",
+          "count"
+        ]
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "physical_phone_acceptance_pending",
+          "camera_not_proven_by_synthetic_suite",
+          "no_backend_or_authorization_test",
+          "confidence_scales_not_comparable",
+          "network_counts_are_application_observations"
+        ]
+      }
+    },
+    "testSuite": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "suiteId": {
+          "const": "vin-synthetic-v1"
+        },
+        "cases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "caseId": {
+                "type": "string",
+                "pattern": "^vin[1-4]-(clean|noise|stretch|combined)$"
+              },
+              "engineId": {
+                "enum": [
+                  "paddle",
+                  "tesseract",
+                  "vin-scanner"
+                ]
+              },
+              "status": {
+                "enum": [
+                  "pass",
+                  "fail",
+                  "blocked",
+                  "untested"
+                ]
+              },
+              "reasonCode": {
+                "enum": [
+                  "ok",
+                  "not_run",
+                  "manual_required",
+                  "api_missing",
+                  "insecure_context",
+                  "permission_denied",
+                  "permission_pending",
+                  "device_missing",
+                  "camera_busy",
+                  "playback_blocked",
+                  "constraint_unsupported",
+                  "asset_missing",
+                  "asset_invalid",
+                  "wasm_unsupported",
+                  "worker_failed",
+                  "initialization_timeout",
+                  "engine_failed",
+                  "frame_invalid",
+                  "image_too_large",
+                  "deadline",
+                  "cancelled",
+                  "superseded",
+                  "late_result_ignored",
+                  "manual_revision_changed",
+                  "expected_simulation_failure",
+                  "native_greedy_fallback",
+                  "network_attempt_blocked",
+                  "correlation_invalid",
+                  "recognition_mismatch",
+                  "canvas_worker_unavailable"
+                ]
+              },
+              "expectedMatch": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "actualLength": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "positionMismatchCount": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "elapsedMs": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "noiseSigma": {
+                "type": "number",
+                "minimum": 0
+              },
+              "stretchX": {
+                "type": "number",
+                "minimum": 0
+              },
+              "nativeAccepted": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "caseId",
+              "engineId",
+              "status",
+              "reasonCode",
+              "expectedMatch",
+              "actualLength",
+              "positionMismatchCount",
+              "elapsedMs",
+              "noiseSigma",
+              "stretchX",
+              "nativeAccepted"
+            ]
+          }
+        }
+      },
+      "required": [
+        "suiteId",
+        "cases"
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "buildId",
+    "environment",
+    "settings",
+    "network",
+    "deviceChecks",
+    "logicChecks",
+    "engineChecks",
+    "manualChecks",
+    "runs",
+    "events",
+    "limitations"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Privacy-safe diagnostics report v2"
+}

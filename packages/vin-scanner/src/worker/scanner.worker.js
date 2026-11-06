@@ -10,6 +10,7 @@
  */
 
 import * as ort from "onnxruntime-web/wasm";
+import "./resource-observer.js";
 
 import { MSG } from "./protocol.js";
 import { fetchModel } from "./model-cache.js";
@@ -56,6 +57,11 @@ self.onmessage = async (event) => {
 };
 
 async function init({ detectorUrl, recUrl, dictUrl, wasmUrl, ngramUrl = null, config = {} }) {
+  detCanvas = new OffscreenCanvas(DET_INPUT_SIZE, DET_INPUT_SIZE);
+  detCtx = detCanvas.getContext("2d", { willReadFrequently: true });
+  cropCanvas = new OffscreenCanvas(CROP_MAX_W, CROP_MAX_H);
+  cropCtx = cropCanvas.getContext("2d", { willReadFrequently: true });
+  if (!detCtx || !cropCtx) throw new Error("OffscreenCanvas 2D is unavailable in this worker");
   ort.env.wasm.wasmPaths = { wasm: wasmUrl };
   // No COOP/COEP on the host page ⇒ no SharedArrayBuffer; pin single-thread
   // so ORT never probes for or spawns proxy workers.
@@ -118,11 +124,6 @@ async function init({ detectorUrl, recUrl, dictUrl, wasmUrl, ngramUrl = null, co
     consensusConfig.tierBCount = Math.max(4, consensusConfig.tierBCount ?? 0);
   }
   tracker = createConsensusTracker(consensusConfig);
-
-  detCanvas = new OffscreenCanvas(DET_INPUT_SIZE, DET_INPUT_SIZE);
-  detCtx = detCanvas.getContext("2d", { willReadFrequently: true });
-  cropCanvas = new OffscreenCanvas(CROP_MAX_W, CROP_MAX_H);
-  cropCtx = cropCanvas.getContext("2d", { willReadFrequently: true });
 
   // decoder: production observability — tells the host whether the n-gram
   // loaded and beam decoding is live, or the worker fell back to greedy.

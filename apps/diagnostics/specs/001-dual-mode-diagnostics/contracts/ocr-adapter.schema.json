@@ -1,0 +1,409 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "runId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+    "generation": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "engineId": {
+      "enum": [
+        "paddle",
+        "tesseract",
+        "vin-scanner"
+      ]
+    },
+    "frameId": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "source": {
+      "enum": [
+        "camera-live",
+        "camera-frozen",
+        "synthetic"
+      ]
+    },
+    "profile": {
+      "enum": [
+        "generic-strict",
+        "native-full"
+      ]
+    },
+    "engineVersion": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 10000
+          },
+          "confidence": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "value": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "scale": {
+                "enum": [
+                  "0-1",
+                  "0-100",
+                  "unknown"
+                ]
+              }
+            },
+            "required": [
+              "value",
+              "scale"
+            ]
+          }
+        },
+        "required": [
+          "text",
+          "confidence"
+        ]
+      }
+    },
+    "nativeVerdict": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "accepted": {
+              "type": "boolean"
+            },
+            "vin": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "confidence": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "value": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "scale": {
+                  "enum": [
+                    "0-1",
+                    "0-100",
+                    "unknown"
+                  ]
+                }
+              },
+              "required": [
+                "value",
+                "scale"
+              ]
+            },
+            "tier": {
+              "enum": [
+                "A",
+                "B",
+                "C",
+                null
+              ]
+            },
+            "checkDigitOk": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "source": {
+              "enum": [
+                "auto",
+                "manual",
+                null
+              ]
+            },
+            "decoder": {
+              "enum": [
+                "beam",
+                "greedy",
+                "unknown"
+              ]
+            }
+          },
+          "required": [
+            "accepted",
+            "vin",
+            "confidence",
+            "tier",
+            "checkDigitOk",
+            "source",
+            "decoder"
+          ],
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "accepted": {
+                    "const": true
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "vin": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "tier": {
+                    "enum": [
+                      "A",
+                      "B",
+                      "C"
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "timings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "inferenceMs": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "totalMs": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "inferenceMs",
+        "totalMs"
+      ]
+    }
+  },
+  "required": [
+    "runId",
+    "generation",
+    "engineId",
+    "frameId",
+    "source",
+    "profile",
+    "engineVersion",
+    "items",
+    "nativeVerdict",
+    "timings"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Runtime OCR result, NEVER export whole object",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "engineId": {
+            "const": "vin-scanner"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profile": {
+            "const": "native-full"
+          },
+          "nativeVerdict": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "accepted": {
+                "type": "boolean"
+              },
+              "vin": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "confidence": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "value": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "scale": {
+                    "enum": [
+                      "0-1",
+                      "0-100",
+                      "unknown"
+                    ]
+                  }
+                },
+                "required": [
+                  "value",
+                  "scale"
+                ]
+              },
+              "tier": {
+                "enum": [
+                  "A",
+                  "B",
+                  "C",
+                  null
+                ]
+              },
+              "checkDigitOk": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "source": {
+                "enum": [
+                  "auto",
+                  "manual",
+                  null
+                ]
+              },
+              "decoder": {
+                "enum": [
+                  "beam",
+                  "greedy",
+                  "unknown"
+                ]
+              }
+            },
+            "required": [
+              "accepted",
+              "vin",
+              "confidence",
+              "tier",
+              "checkDigitOk",
+              "source",
+              "decoder"
+            ],
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "accepted": {
+                      "const": true
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "vin": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128
+                    },
+                    "tier": {
+                      "enum": [
+                        "A",
+                        "B",
+                        "C"
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profile": {
+            "const": "generic-strict"
+          },
+          "nativeVerdict": {
+            "type": "null"
+          },
+          "frameId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+          }
+        }
+      }
+    }
+  ]
+}

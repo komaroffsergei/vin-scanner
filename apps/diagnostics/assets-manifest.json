@@ -1,0 +1,385 @@
+{
+  "schemaVersion": 1,
+  "resources": [
+    {
+      "path": "native/vin_detector.onnx",
+      "source": "vin-scanner@a9288bb3668633906df657aed29e908dddbe691e",
+      "version": "0.1.1",
+      "license": "AGPL-3.0-only; see NOTICE",
+      "bytes": 2997599,
+      "sha256": "b150fb0ac78d89d32477014b0f0a5aa0d7e5c8d18ce67dc8456e6e60468503a0"
+    },
+    {
+      "path": "native/ppocr-rec.onnx",
+      "source": "vin-scanner@a9288bb3668633906df657aed29e908dddbe691e",
+      "version": "0.1.1",
+      "license": "AGPL-3.0-only; see NOTICE",
+      "bytes": 2206627,
+      "sha256": "466d2b8a9320162638a146167bba096330582d46c163015d77eff1a2f1caaca0"
+    },
+    {
+      "path": "native/vin_dict.txt",
+      "source": "vin-scanner@a9288bb3668633906df657aed29e908dddbe691e",
+      "version": "0.1.1",
+      "license": "AGPL-3.0-only; see NOTICE",
+      "bytes": 99,
+      "sha256": "e2e0d35afd6bb6dc3f4b38362f076b0bbb3abf2ac6a3453070de4d28f590d9bb"
+    },
+    {
+      "path": "native/vin_ngram.json",
+      "source": "vin-scanner@a9288bb3668633906df657aed29e908dddbe691e",
+      "version": "0.1.1",
+      "license": "AGPL-3.0-only; see NOTICE",
+      "bytes": 716989,
+      "sha256": "654babb8b8a34c3b5e44918854df74e86b0dab7db3a41faf12623ec48e85683b"
+    },
+    {
+      "path": "native/ort-wasm-simd-threaded.wasm",
+      "source": "onnxruntime-web",
+      "version": "1.24.2",
+      "license": "MIT",
+      "bytes": 12303130,
+      "sha256": "175fabe412fc7fd1376e3178861a47ebfdc30cedb3b2c3f6bb72c37d96c26f73"
+    },
+    {
+      "path": "native/ort-wasm-simd-threaded.mjs",
+      "source": "onnxruntime-web",
+      "version": "1.24.2",
+      "license": "MIT",
+      "bytes": 24274,
+      "sha256": "b538a29137066dbed1f0f449fb081dfd35ccde3d5b155adc34532cefa3b23ee2"
+    },
+    {
+      "path": "paddle/ort-wasm-simd-threaded.jsep.wasm",
+      "source": "onnxruntime-web",
+      "version": "1.24.3",
+      "license": "MIT",
+      "bytes": 25014754,
+      "sha256": "2e0a3d0e3f6b7c13ecfaba38c13691fd19c9ed470e72f9d7d8416ca59ab6dbcd"
+    },
+    {
+      "path": "paddle/ort-wasm-simd-threaded.jsep.mjs",
+      "source": "onnxruntime-web",
+      "version": "1.24.3",
+      "license": "MIT",
+      "bytes": 46595,
+      "sha256": "9a99acd12acc495184c9ea4d458ac9424f8180aacfbc7b8371ed64f9351e4a81"
+    },
+    {
+      "path": "paddle/worker.js",
+      "source": "@paddleocr/paddleocr-js",
+      "version": "0.4.2",
+      "license": "Apache-2.0; bundled OpenCV and ORT notices preserved",
+      "bytes": 11369270,
+      "sha256": "ccbc32844c8a134a661f960ba2bb6aa5ceb580c54dfb27a7ece6ea61a2287bd5",
+      "sourceSha256": "477db3f009c118823a5f9ebe15f1e96c1c464165715ba28a9884290f61addf52",
+      "instrumentation": "Resource timing count only; official OCR code unchanged"
+    },
+    {
+      "path": "paddle/PP-OCRv6_tiny_det_onnx_infer.tar",
+      "source": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0.0/PP-OCRv6_tiny_det_onnx_infer.tar",
+      "version": "PP-OCRv6_tiny",
+      "license": "Apache-2.0",
+      "bytes": 1792000,
+      "sha256": "ff6ab415b0a6e0c488550f2fb5d5046f1719848df220b2dc21b56402a65bc05d"
+    },
+    {
+      "path": "paddle/PP-OCRv6_tiny_rec_onnx_infer.tar",
+      "source": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0.0/PP-OCRv6_tiny_rec_onnx_infer.tar",
+      "version": "PP-OCRv6_tiny",
+      "license": "Apache-2.0",
+      "bytes": 4526080,
+      "sha256": "1e13b22717b1edd89d4cde4fda272b6c17d5b505c97c2baea99da1a3a2d54b29"
+    },
+    {
+      "path": "tesseract/tesseract.esm.min.js",
+      "source": "tesseract.js",
+      "version": "7.0.0",
+      "license": "Apache-2.0",
+      "bytes": 63220,
+      "sha256": "64871d76c75609fd5413b88a8171e2ef40deedd77d5875ba23df104b2d05eb29"
+    },
+    {
+      "path": "tesseract/worker.min.js",
+      "source": "tesseract.js",
+      "version": "7.0.0",
+      "license": "Apache-2.0",
+      "bytes": 111741,
+      "sha256": "20a311dba11574af69edf55ae40e38d3da8bc934f4ff49ee2f4d544d4d7be9e6",
+      "sourceSha256": "576b7df7e3393e137e51849357c9adb53fe7ac1bb69bfa06cf3d61520f182c6d",
+      "instrumentation": "Resource timing count only; official OCR code unchanged"
+    },
+    {
+      "path": "tesseract/core/tesseract-core-lstm.js",
+      "source": "tesseract.js-core",
+      "version": "7.0.0",
+      "license": "Apache-2.0",
+      "bytes": 89261,
+      "sha256": "6510efc4e8b45c5465df30679b9911ffe0071cd2ee982fa064e6f5136ef2de85"
+    },
+    {
+      "path": "tesseract/core/tesseract-core-lstm.wasm",
+      "source": "tesseract.js-core",
+      "version": "7.0.0",
+      "license": "Apache-2.0",
+      "bytes": 2855361,
+      "sha256": "66b17df6e20c5329a17ffa9c202a47eaa3e32500b253d4c7f38e7f2bc01457c3"
+    },
+    {
+      "path": "tesseract/core/tesseract-core-lstm.wasm.js",
+      "source": "tesseract.js-core",
+      "version": "7.0.0",
+      "license": "Apache-2.0",
+      "bytes": 3896484,
+      "sha256": "eef5f8b2f8e20e150680b20adaec4a60babafee3adbe8a94583c81fee46e8680"
+    },
+    {
+      "path": "tesseract/core/tesseract-core-relaxedsimd-lstm.js",
+      "source": "tesseract.js-core",
+      "version": "7.0.0",
+      "license": "Apache-2.0",
+      "bytes": 89360,
+      "sha256": "a37ac78b707e8d5d3d2e532cc3c4e69b04d127ea44a608f1e7de17640402aa5c"
+    },
+    {
+      "path": "tesseract/core/tesseract-core-relaxedsimd-lstm.wasm",
+      "source": "tesseract.js-core",
+      "version": "7.0.0",
+      "license": "Apache-2.0",
+      "bytes": 2862266,
+      "sha256": "7985c92d4c64e7267d24cadffe1b2a1da6bf8aa55fdcaf953fe94fe122a24545"
+    },
+    {
+      "path": "tesseract/core/tesseract-core-relaxedsimd-lstm.wasm.js",
+      "source": "tesseract.js-core",
+      "version": "7.0.0",
+      "license": "Apache-2.0",
+      "bytes": 3905767,
+      "sha256": "861a536cf9ef8e63cb644d57bab39c388f37f7d6b6f60024b741c5f6b39a59b3"
+    },
+    {
+      "path": "tesseract/core/tesseract-core-simd-lstm.js",
+      "source": "tesseract.js-core",
+      "version": "7.0.0",
+      "license": "Apache-2.0",
+      "bytes": 89271,
+      "sha256": "e48e2f02ddae3716c8dd24bf41cd290d4efa96892d689cdc4013c2545d63f469"
+    },
+    {
+      "path": "tesseract/core/tesseract-core-simd-lstm.wasm",
+      "source": "tesseract.js-core",
+      "version": "7.0.0",
+      "license": "Apache-2.0",
+      "bytes": 2857601,
+      "sha256": "34e8d50cac216427d86bf397d610fdd9f49492539bbcdfbfccc4eda20c810bea"
+    },
+    {
+      "path": "tesseract/core/tesseract-core-simd-lstm.wasm.js",
+      "source": "tesseract.js-core",
+      "version": "7.0.0",
+      "license": "Apache-2.0",
+      "bytes": 3899472,
+      "sha256": "c58b46a4c796c0b8afccf77591d5b875b6896b45d402bbce8caa6f5362447b38"
+    },
+    {
+      "path": "tesseract/lang/eng.traineddata.gz",
+      "source": "@tesseract.js-data/eng",
+      "version": "1.0.0 / 4.0.0_best_int",
+      "license": "Apache-2.0 trained data; MIT packaging",
+      "bytes": 2952873,
+      "sha256": "45b4cb346724ac1774f1c36f42f182b887bcdb28ebe63e6fff90ac41f3fcff91"
+    },
+    {
+      "path": "licenses/tesseract.js-LICENSE.md",
+      "source": "tesseract.js",
+      "version": "see lockfile",
+      "license": "see file",
+      "bytes": 11357,
+      "sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1"
+    },
+    {
+      "path": "licenses/tesseract.js-core-LICENSE",
+      "source": "tesseract.js-core",
+      "version": "see lockfile",
+      "license": "see file",
+      "bytes": 11358,
+      "sha256": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08"
+    },
+    {
+      "path": "licenses/@techstark-opencv-js-LICENSE",
+      "source": "@techstark/opencv-js",
+      "version": "see lockfile",
+      "license": "see file",
+      "bytes": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "path": "licenses/vin-scanner-LICENSE",
+      "source": "vin-scanner",
+      "version": "0.1.1",
+      "license": "AGPL-3.0-only; see NOTICE",
+      "bytes": 35184,
+      "sha256": "e0eedba615d5cd1b986afb6c5b3a4b1ae33713e7e9dc74d19daec5e3221f9d2e"
+    },
+    {
+      "path": "licenses/vin-scanner-NOTICE.md",
+      "source": "vin-scanner",
+      "version": "0.1.1",
+      "license": "AGPL-3.0-only; see NOTICE",
+      "bytes": 2726,
+      "sha256": "e691d5bb8d8438c7f15e5cab0c15d35b3e8d2580d5e09332189689b8b6e7f320"
+    },
+    {
+      "path": "fixtures/vin1-clean.png",
+      "source": "deterministic synthetic generator / seed 0x77107731",
+      "version": "vin-synthetic-v1",
+      "license": "Synthetic test data",
+      "bytes": 23888,
+      "sha256": "4b5f0ce8edf882f6337f61c08e4109cc4f7d4585a2b3b01c37450d236ffd72d4"
+    },
+    {
+      "path": "fixtures/vin1-noise.png",
+      "source": "deterministic synthetic generator / seed 0x77107731",
+      "version": "vin-synthetic-v1",
+      "license": "Synthetic test data",
+      "bytes": 496676,
+      "sha256": "544a9abcfd74a98b6144fca28c7b386efde618d68fc055966ea96a47ecef9357"
+    },
+    {
+      "path": "fixtures/vin1-stretch.png",
+      "source": "deterministic synthetic generator / seed 0x77107731",
+      "version": "vin-synthetic-v1",
+      "license": "Synthetic test data",
+      "bytes": 21476,
+      "sha256": "6afb4d8b603a59e1d352b3bb9ce82b08aee5e3971c0082a1fdb88a0a2ab68cf6"
+    },
+    {
+      "path": "fixtures/vin1-combined.png",
+      "source": "deterministic synthetic generator / seed 0x77107731",
+      "version": "vin-synthetic-v1",
+      "license": "Synthetic test data",
+      "bytes": 496498,
+      "sha256": "9eceb7d88488a0b866425f229af75b37c7e1c03582cce10d09bc035d05a5df0b"
+    },
+    {
+      "path": "fixtures/vin2-clean.png",
+      "source": "deterministic synthetic generator / seed 0x77107731",
+      "version": "vin-synthetic-v1",
+      "license": "Synthetic test data",
+      "bytes": 20476,
+      "sha256": "6eb1eb515f8f2d5e11d9f0b44541221ac9d82825a40a88b8cae174e4bfbfa437"
+    },
+    {
+      "path": "fixtures/vin2-noise.png",
+      "source": "deterministic synthetic generator / seed 0x77107731",
+      "version": "vin-synthetic-v1",
+      "license": "Synthetic test data",
+      "bytes": 556263,
+      "sha256": "cdbd975ba050255adccf17a6c5d6c1de9f8d0d49a697991e8f6356fd8f566f4e"
+    },
+    {
+      "path": "fixtures/vin2-stretch.png",
+      "source": "deterministic synthetic generator / seed 0x77107731",
+      "version": "vin-synthetic-v1",
+      "license": "Synthetic test data",
+      "bytes": 19324,
+      "sha256": "b24efc64b49c92d3a35a9aef8b59dd78b7d80e3292aa58009d52cabcf1557283"
+    },
+    {
+      "path": "fixtures/vin2-combined.png",
+      "source": "deterministic synthetic generator / seed 0x77107731",
+      "version": "vin-synthetic-v1",
+      "license": "Synthetic test data",
+      "bytes": 560271,
+      "sha256": "d2adb2f72668aede5dca500ee242f25a04c50fcc8c3f197ae62ed930bf5441f4"
+    },
+    {
+      "path": "fixtures/vin3-clean.png",
+      "source": "deterministic synthetic generator / seed 0x77107731",
+      "version": "vin-synthetic-v1",
+      "license": "Synthetic test data",
+      "bytes": 24621,
+      "sha256": "dec5f43f553d0cda7a981bffaf927aee56571109e772d3f1dad85e58351fa4f7"
+    },
+    {
+      "path": "fixtures/vin3-noise.png",
+      "source": "deterministic synthetic generator / seed 0x77107731",
+      "version": "vin-synthetic-v1",
+      "license": "Synthetic test data",
+      "bytes": 563381,
+      "sha256": "aca66ffaf961661235c8955e845fb8291e4c850a78cb4805d21acb0f801ca915"
+    },
+    {
+      "path": "fixtures/vin3-stretch.png",
+      "source": "deterministic synthetic generator / seed 0x77107731",
+      "version": "vin-synthetic-v1",
+      "license": "Synthetic test data",
+      "bytes": 28701,
+      "sha256": "68356dd1b253c38e5c5884f2fb0f717d084dea665335fbb57053c1e3cb7be022"
+    },
+    {
+      "path": "fixtures/vin3-combined.png",
+      "source": "deterministic synthetic generator / seed 0x77107731",
+      "version": "vin-synthetic-v1",
+      "license": "Synthetic test data",
+      "bytes": 567047,
+      "sha256": "ee30d6a04b0013668100658e4cde42645178957da8f4932981301288048ab2ad"
+    },
+    {
+      "path": "fixtures/vin4-clean.png",
+      "source": "deterministic synthetic generator / seed 0x77107731",
+      "version": "vin-synthetic-v1",
+      "license": "Synthetic test data",
+      "bytes": 23807,
+      "sha256": "dd45dd82b3c6407e8a31d112e4941f0c15178fb06927383e59335379182f97a2"
+    },
+    {
+      "path": "fixtures/vin4-noise.png",
+      "source": "deterministic synthetic generator / seed 0x77107731",
+      "version": "vin-synthetic-v1",
+      "license": "Synthetic test data",
+      "bytes": 566503,
+      "sha256": "7d17fed083a7dba461e618c14292bc96f5c52dd9bdc25de0972586cff16acebd"
+    },
+    {
+      "path": "fixtures/vin4-stretch.png",
+      "source": "deterministic synthetic generator / seed 0x77107731",
+      "version": "vin-synthetic-v1",
+      "license": "Synthetic test data",
+      "bytes": 26847,
+      "sha256": "492178c4c53f3c4803f231b4a7b5c017983d17ac6d1672e6cf7d2de23d8b6adb"
+    },
+    {
+      "path": "fixtures/vin4-combined.png",
+      "source": "deterministic synthetic generator / seed 0x77107731",
+      "version": "vin-synthetic-v1",
+      "license": "Synthetic test data",
+      "bytes": 566419,
+      "sha256": "c6b20f1955fc24f83d4ad82738e2fc12e3ac1c1922fb5b195d69365deea565f3"
+    },
+    {
+      "path": "fixtures/manifest.json",
+      "source": "diagnostics synthetic generator",
+      "version": "vin-synthetic-v1",
+      "license": "Synthetic test data",
+      "bytes": 5772,
+      "sha256": "7a01d963ee4564f2cb5ff4ba082045b597969162a0cb19ade2cfac6df1fa1957"
+    },
+    {
+      "path": "licenses/LICENSE-DejaVu.html",
+      "source": "https://dejavu-fonts.github.io/License.html",
+      "version": "DejaVu Fonts",
+      "license": "See license file",
+      "bytes": 5561,
+      "sha256": "d1219f132f33efc907d0d9ba4d312d68f0972f2f4760ebe0f3ed2106adfa4e1a"
+    },
+    {
+      "path": "vin-synthetic-v1.zip",
+      "source": "diagnostics canonical fixtures",
+      "version": "vin-synthetic-v1",
+      "license": "Synthetic test data",
+      "bytes": 4529617,
+      "sha256": "6c09fc73e997f0c84d68d972328fac0f3aae1261ba38c691ddb47109d07dfdb9"
+    }
+  ]
+}

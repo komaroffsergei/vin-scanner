@@ -1,0 +1,186 @@
+{
+  "schemaVersion": 1,
+  "transport": "in-memory",
+  "realHttpRequests": false,
+  "defaults": {
+    "captureIntervalMs": 750,
+    "sessionTimeoutSeconds": 30,
+    "image": {
+      "maxDimension": 1280,
+      "jpegQuality": 0.8,
+      "maxBytes": 1500000
+    }
+  },
+  "availabilityProfiles": [
+    {
+      "id": "allowed",
+      "allowed": true,
+      "enabled": true,
+      "available": true,
+      "startsAttempt": true
+    },
+    {
+      "id": "forbidden",
+      "allowed": false,
+      "enabled": true,
+      "available": true,
+      "startsAttempt": false
+    },
+    {
+      "id": "disabled",
+      "allowed": true,
+      "enabled": false,
+      "available": true,
+      "startsAttempt": false
+    },
+    {
+      "id": "unavailable",
+      "allowed": true,
+      "enabled": true,
+      "available": false,
+      "startsAttempt": false
+    },
+    {
+      "id": "error",
+      "virtualHttpStatus": null,
+      "startsAttempt": false
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "success",
+      "expectedOutcome": "Recognized",
+      "virtualHttpStatus": null,
+      "note": null,
+      "expectedFailureIsDeviceFailure": false
+    },
+    {
+      "id": "no-vin",
+      "expectedOutcome": "NoVin",
+      "virtualHttpStatus": null,
+      "note": null,
+      "expectedFailureIsDeviceFailure": false
+    },
+    {
+      "id": "timeout",
+      "expectedOutcome": "TimedOut",
+      "virtualHttpStatus": null,
+      "note": null,
+      "expectedFailureIsDeviceFailure": false
+    },
+    {
+      "id": "limit",
+      "expectedOutcome": "LimitExceeded",
+      "virtualHttpStatus": null,
+      "note": null,
+      "expectedFailureIsDeviceFailure": false
+    },
+    {
+      "id": "disabled",
+      "expectedOutcome": "Disabled",
+      "virtualHttpStatus": null,
+      "note": null,
+      "expectedFailureIsDeviceFailure": false
+    },
+    {
+      "id": "provider",
+      "expectedOutcome": "ProviderUnavailable",
+      "virtualHttpStatus": null,
+      "note": null,
+      "expectedFailureIsDeviceFailure": false
+    },
+    {
+      "id": "slow",
+      "expectedOutcome": "Recognized",
+      "virtualHttpStatus": null,
+      "note": "No queue; minimum 2500 ms frame latency in normal diagnostic mode.",
+      "expectedFailureIsDeviceFailure": false
+    },
+    {
+      "id": "http-error",
+      "expectedOutcome": "ProviderUnavailable",
+      "virtualHttpStatus": 503,
+      "note": null,
+      "expectedFailureIsDeviceFailure": false
+    },
+    {
+      "id": "server-wait",
+      "expectedOutcome": "Recognized",
+      "virtualHttpStatus": null,
+      "note": "Respect nextCaptureAfterMs; fresh next frame.",
+      "expectedFailureIsDeviceFailure": false
+    },
+    {
+      "id": "deadline-extension",
+      "expectedOutcome": "TimedOut",
+      "virtualHttpStatus": null,
+      "note": "remainingMs=600000 must never extend local deadline.",
+      "expectedFailureIsDeviceFailure": false
+    },
+    {
+      "id": "frame-in-progress",
+      "expectedOutcome": "Recognized",
+      "virtualHttpStatus": 400,
+      "note": "VinRecognitionFrameInProgress",
+      "expectedFailureIsDeviceFailure": false
+    },
+    {
+      "id": "frame-too-early",
+      "expectedOutcome": "Recognized",
+      "virtualHttpStatus": 400,
+      "note": "VinRecognitionFrameTooEarly",
+      "expectedFailureIsDeviceFailure": false
+    },
+    {
+      "id": "forbidden",
+      "expectedOutcome": "RequestRejected",
+      "virtualHttpStatus": 400,
+      "note": "VinRecognitionForbidden",
+      "expectedFailureIsDeviceFailure": false
+    },
+    {
+      "id": "not-found",
+      "expectedOutcome": "RequestRejected",
+      "virtualHttpStatus": 400,
+      "note": "VinRecognitionSessionNotFound",
+      "expectedFailureIsDeviceFailure": false
+    },
+    {
+      "id": "image-invalid",
+      "expectedOutcome": "RequestRejected",
+      "virtualHttpStatus": 400,
+      "note": "VinRecognitionImageInvalid",
+      "expectedFailureIsDeviceFailure": false
+    },
+    {
+      "id": "image-too-large",
+      "expectedOutcome": "RequestRejected",
+      "virtualHttpStatus": 400,
+      "note": "VinRecognitionImageTooLarge",
+      "expectedFailureIsDeviceFailure": false
+    }
+  ],
+  "mainSequence": [
+    "Searching",
+    "NeedBetterFrame",
+    "Candidate",
+    "Recognized"
+  ],
+  "syntheticResult": {
+    "vin": "XTA00000000000001",
+    "label": "Synthetic simulation result, not OCR"
+  },
+  "additionalLogicCases": [
+    "cancel",
+    "restart",
+    "late-response",
+    "manual-edit",
+    "wrong-correlation",
+    "idempotent-create",
+    "idempotent-frame",
+    "idempotent-delete",
+    "cancel-after-terminal",
+    "image-budget",
+    "init-cancel"
+  ]
+}
