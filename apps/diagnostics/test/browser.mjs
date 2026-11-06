@@ -101,7 +101,9 @@ try {
     assert(result.network.staticResourceRequests > 20);
     assert.equal(await page.locator('#vinInput').inputValue(), 'PRIVATE_SENTINEL');
     assert.deepEqual(problems, []);
-    for (const request of requests) { if (/\.scr\.kaspersky-labs\.com$/.test(new URL(request.url).hostname)) { console.log('ENVIRONMENT NETWORK INJECTION: Kaspersky browser instrumentation; not an application-origin verification'); continue; } if (!/^https?:/.test(request.url)) { assert(['data:', 'blob:'].includes(request.url)); continue; } assert(['GET', 'HEAD'].includes(request.method)); assert.equal(new URL(request.url).origin, new URL(url).origin); assert.match(new URL(request.url).pathname, /\/vin-scanner\/releases\/[^/]+\/assets\//); }
+    const injected = requests.filter(request => /\.scr\.kaspersky-labs\.com$/.test(new URL(request.url).hostname));
+    if (injected.length) console.log('ENVIRONMENT NETWORK INJECTION:', injected.length, 'Kaspersky instrumentation requests; independent origin verification remains unperformed.');
+    for (const request of requests) { if (injected.includes(request)) continue; if (!/^https?:/.test(request.url)) { assert(['data:', 'blob:'].includes(request.url)); continue; } assert(['GET', 'HEAD'].includes(request.method)); assert.equal(new URL(request.url).origin, new URL(url).origin); assert.match(new URL(request.url).pathname, /\/vin-scanner\/releases\/[^/]+\/assets\//); }
     const table = await page.locator('#ocrResults tr').evaluateAll(rows => rows.map(row => [...row.children].map(cell => cell.textContent)));
     await writeFile(path.join(artifacts, 'actual-ocr.json'), JSON.stringify({ report: result, table, requests }, null, 2));
     await page.locator('#resultsWrap').scrollIntoViewIfNeeded(); await page.screenshot({ path: path.join(artifacts, 'results.png') });

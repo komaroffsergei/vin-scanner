@@ -307,7 +307,10 @@ async function runLive() {
   try {
     context = begin('live'); const engineId = $('engineSelect').value; context.engineId = engineId;
     const run = newRun(context, engineId, 'camera-live');
-    if (engineId === 'vin-scanner') { await nativeLive(context, run); return; }
+    if (engineId === 'vin-scanner') {
+      run.metrics.frames = null; run.metrics.sourceImageCount = null; run.metrics.maxInFlight = null; // Native public events do not expose frame counts.
+      await nativeLive(context, run); return;
+    }
     run.metrics.initializationMs = await initialize(context, engineId);
     state('Движок готов. Ожидается разрешение камеры; это ожидание не входит в попытку.', context);
     await bounded(baseline.openCamera(), context.controller.signal, null, 'deadline'); requireCurrent(context);

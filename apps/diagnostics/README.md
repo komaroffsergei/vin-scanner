@@ -30,7 +30,7 @@ Canonical input PNGs are committed under `fixtures/images`. They must not be reg
 - Every run has a generation and input revision. At most one OCR runtime/camera owner/frame in flight is permitted. Model init is bounded by 60 seconds, including resource loading; recognition starts after the camera is ready. Permission can remain pending until Stop. Stop/terminal/tab/engine/camera changes/hidden/pagehide destroy owned runtime and tracks; there is no automatic resume.
 - The suite runs 16 images × three real engines sequentially, one initialized runtime per engine, no camera. Each input has a 30-second operation budget. Fatal engine failure leaves later cases untested and continues the next engine. A mismatch is measured, not hidden or retried against the reference label.
 - Safe JSON uses the amended schemaVersion 2 schema. It excludes images, binary data, entered/expected/recognized VINs, raw reads, camera identifiers and exception text. Resource observations include host and worker resource timing counts; they are not packet capture. Independent verification defaults to `not_performed`.
-- Native optional event `scan-resource-observed` contains only `{count}`; it has no effect on inference. Native lifecycle guards cover worker init, pending permission, autofocus, play, retry, bitmap and torch awaits. Other native public events retain their shapes.
+- Native optional event `scan-resource-observed` contains only `{count}`; it has no effect on inference. Native lifecycle guards cover worker init, pending permission, autofocus, play, retry, bitmap and torch awaits. Other native public events retain their shapes. Unobservable native live frame counts and per-frame timings are null, never invented as zero.
 
 ## Validation
 

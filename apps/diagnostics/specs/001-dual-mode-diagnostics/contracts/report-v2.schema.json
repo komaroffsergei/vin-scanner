@@ -1018,17 +1018,38 @@
                 "minimum": 0
               },
               "frames": {
-                "type": "integer",
-                "minimum": 0
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
               "sourceImageCount": {
-                "type": "integer",
-                "minimum": 0
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
               "maxInFlight": {
-                "type": "integer",
-                "minimum": 0,
-                "maximum": 1
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
               "queueLength": {
                 "const": 0
@@ -1195,6 +1216,39 @@
               "properties": {
                 "frozenFrameId": {
                   "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "engineId": {
+                  "const": "vin-scanner"
+                },
+                "source": {
+                  "const": "camera-live"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "metrics": {
+                  "properties": {
+                    "frames": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "sourceImageCount": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "maxInFlight": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  }
                 }
               }
             }
