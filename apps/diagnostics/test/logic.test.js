@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { bounded, compareText, freshConsensus, strictCandidate } from '../src/ocr/common.js';
+import { bounded, compareText, freshConsensus, pause, strictCandidate } from '../src/ocr/common.js';
 import { openCameraStream } from '../../../packages/vin-scanner/src/element/camera.js';
 
 const vin = '1M8GDM9AXKP042788';
@@ -35,6 +35,14 @@ test('cancellation rejects pending work and closes a late bitmap exactly once', 
 test('deadline rejects work without extending for late results', async () => {
   const controller = new AbortController();
   await assert.rejects(bounded(new Promise(() => {}), controller.signal, 10, 'deadline'), { code: 'deadline' });
+});
+test('stopping an interval wait clears the underlying timer immediately', async () => {
+  const controller = new AbortController(); const original = globalThis.clearTimeout; let clears = 0;
+  globalThis.clearTimeout = timer => { if (timer) clears++; original(timer); };
+  try {
+    const pending = pause(10000, controller.signal); controller.abort();
+    await assert.rejects(pending, { code: 'cancelled' }); assert.equal(clears, 1);
+  } finally { globalThis.clearTimeout = original; }
 });
 test('native late permission is stopped before optional autofocus', async () => {
   const original = Object.getOwnPropertyDescriptor(navigator, 'mediaDevices');

@@ -50,6 +50,12 @@ export function bounded(promise, signal, milliseconds, code, onLate) {
   });
 }
 
+export function pause(milliseconds, signal) {
+  let timer;
+  const delay = new Promise(resolve => { timer = setTimeout(resolve, milliseconds); });
+  return bounded(delay, signal, null, 'cancelled').finally(() => clearTimeout(timer));
+}
+
 export function resource(path) { return new URL(import.meta.env.BASE_URL + 'assets/' + path, document.baseURI).href; }
 
 export async function staticFetch(path, signal) {

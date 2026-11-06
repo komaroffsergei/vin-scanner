@@ -1,5 +1,5 @@
 import { createBaseline } from './baseline.js';
-import { ENGINE_IDS, ENGINE_LABELS, ENGINE_VERSIONS, bounded, compareText, engineFault, fault, freshConsensus, resource, staticFetch, strictCandidate } from './ocr/common.js';
+import { ENGINE_IDS, ENGINE_LABELS, ENGINE_VERSIONS, bounded, compareText, engineFault, fault, freshConsensus, pause as wait, resource, staticFetch, strictCandidate } from './ocr/common.js';
 import { buildSafeReport } from './report.js';
 import info from './build-info.json';
 import assetManifest from '../assets-manifest.json';
@@ -327,10 +327,10 @@ async function runLive() {
       requireCurrent(context);
       const remaining = deadline - performance.now(); if (remaining <= 0) throw fault('deadline');
       const pause = Math.max(0, lastStart + context.settings.captureIntervalMs - performance.now());
-      if (pause) await bounded(new Promise(resolve => setTimeout(resolve, pause)), context.controller.signal, remaining, 'deadline');
+      if (pause) await bounded(wait(pause, context.controller.signal), context.controller.signal, remaining, 'deadline');
       requireCurrent(context);
       const sourceTime = $('video').currentTime;
-      if (sourceTime <= consensus.sourceTime) { await bounded(new Promise(resolve => setTimeout(resolve, 30)), context.controller.signal, deadline - performance.now(), 'deadline'); continue; }
+      if (sourceTime <= consensus.sourceTime) { await bounded(wait(30, context.controller.signal), context.controller.signal, deadline - performance.now(), 'deadline'); continue; }
       lastStart = performance.now();
       const frame = await bounded(baseline.prepareFrame('camera', context.settings, () => current(context)), context.controller.signal, deadline - performance.now(), 'deadline');
       const { result } = await recognize(context, frame, run, Math.max(1, deadline - performance.now()));
