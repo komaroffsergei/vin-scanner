@@ -56,6 +56,7 @@ clientPanel.innerHTML = `
   <div class="row"><button id="suiteButton" class="primary" type="button">Прогнать 16 тестовых изображений</button><button id="galleryButton" type="button">Посмотреть изображения</button><a id="fixturesDownload" class="small" download>Скачать PNG и manifest · ZIP</a></div>
   <p id="suiteSummary" class="small muted" aria-live="polite">48 проверок: 16 изображений × 3 настоящих движка. Сложные случаи могут читаться ошибочно.</p>
   <div class="table-wrap" tabindex="0" aria-label="Результаты OCR, таблицу можно прокручивать" hidden id="resultsWrap"><table class="results-table"><thead><tr><th>Пример / источник</th><th>Движок</th><th>Ожидаемый</th><th>Прочитано</th><th>Совпадение / позиции</th><th>Время</th><th>Confidence</th><th>Native verdict</th></tr></thead><tbody id="ocrResults"></tbody></table></div>
+  <p class="small muted">У форка «Прочитано» — raw read. Native verdict показан отдельно. С эталоном сравнивается принятый native VIN, если он есть; иначе чтение. Confidence не является вероятностью точности.</p>
   <div id="fixtureGallery" class="fixture-gallery" hidden></div>
   <div class="divider"></div><p class="ocr-legal">Powered by <a href="https://scanvin.app" rel="noreferrer" target="_blank">ScanVin</a> · AGPL-3.0-only. <a id="sourceLink" rel="noreferrer" target="_blank">Исходники сборки</a> · <a id="licenseLink" target="_blank" rel="noreferrer">Лицензия</a> · <a id="noticeLink" target="_blank" rel="noreferrer">NOTICE</a> · <a id="assetLink" target="_blank" rel="noreferrer">Ресурсы и SHA-256</a></p>
   <p id="buildInfo" class="small muted build-info"></p>`;
@@ -192,9 +193,10 @@ async function recognize(context, frame, run, milliseconds = 30000) {
 function showResultRow({ caseId, engineId, expected = '', text = '', result, elapsed, comparison, message = '' }) {
   const row = node('tr');
   const native = result?.nativeVerdict;
-  const verdict = native ? (native.accepted ? 'Accepted · Tier ' + native.tier : 'Нет native acceptance') + ' · ' + result.decoder : 'Строгий профиль · снимок';
-  const confidence = native?.confidence ?? result?.items[0]?.confidence;
-  for (const cellText of [caseId, ENGINE_LABELS[engineId], expected || 'не задан', text || message || 'пустой read',
+  const verdict = native ? (native.accepted ? 'Accepted · ' + native.vin + ' · Tier ' + native.tier + ' · confidence ' + Number(native.confidence).toFixed(3) : 'Нет native acceptance') + ' · ' + result.decoder : 'Строгий профиль · снимок';
+  const confidence = result?.items[0]?.confidence;
+  const rawText = engineId === 'vin-scanner' && result ? result.items.map(item => item.text).join('\n') : text;
+  for (const cellText of [caseId, ENGINE_LABELS[engineId], expected || 'не задан', rawText || message || 'пустой read',
     comparison?.expectedMatch === null || !comparison ? '—' : comparison.expectedMatch ? 'Точно' : 'Нет · позиции ' + (comparison.mismatchedPositions?.join(', ') || 'другая длина'),
     elapsed === undefined ? '—' : Math.round(elapsed) + ' мс', confidence === undefined || confidence === null ? '—' : Number(confidence).toFixed(3) + ' / ' + result.confidenceScale, result ? verdict : message]) row.append(node('td', cellText));
   row.children[4].dataset.match = String(comparison?.expectedMatch);
