@@ -212,7 +212,8 @@
               "network_attempt_blocked",
               "correlation_invalid",
               "recognition_mismatch",
-              "canvas_worker_unavailable"
+              "canvas_worker_unavailable",
+              "settings_invalid"
             ]
           },
           "facts": {
@@ -357,7 +358,8 @@
               "network_attempt_blocked",
               "correlation_invalid",
               "recognition_mismatch",
-              "canvas_worker_unavailable"
+              "canvas_worker_unavailable",
+              "settings_invalid"
             ]
           },
           "facts": {
@@ -502,7 +504,8 @@
               "network_attempt_blocked",
               "correlation_invalid",
               "recognition_mismatch",
-              "canvas_worker_unavailable"
+              "canvas_worker_unavailable",
+              "settings_invalid"
             ]
           },
           "facts": {
@@ -647,7 +650,8 @@
               "network_attempt_blocked",
               "correlation_invalid",
               "recognition_mismatch",
-              "canvas_worker_unavailable"
+              "canvas_worker_unavailable",
+              "settings_invalid"
             ]
           },
           "facts": {
@@ -1329,7 +1333,8 @@
                   "network_attempt_blocked",
                   "correlation_invalid",
                   "recognition_mismatch",
-                  "canvas_worker_unavailable"
+                  "canvas_worker_unavailable",
+                  "settings_invalid"
                 ]
               },
               {
@@ -1434,7 +1439,8 @@
                   "network_attempt_blocked",
                   "correlation_invalid",
                   "recognition_mismatch",
-                  "canvas_worker_unavailable"
+                  "canvas_worker_unavailable",
+                  "settings_invalid"
                 ]
               },
               "expectedMatch": {

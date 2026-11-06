@@ -88,8 +88,11 @@ function record(code, context = owner, reasonCode = 'ok', count = null) {
 function current(context) { return owner === context && context.generation === generation && !context.controller.signal.aborted && !document.hidden; }
 function requireCurrent(context) { if (!current(context)) throw fault('cancelled'); }
 function state(text, context = owner) { if (!context || current(context)) $('clientState').textContent = text; }
-function codeOf(error) { return error?.code && ['cancelled', 'asset_missing', 'asset_invalid', 'canvas_worker_unavailable', 'wasm_unsupported', 'worker_failed', 'engine_failed', 'initialization_timeout', 'deadline', 'api_missing', 'frame_invalid', 'image_too_large'].includes(error.code) ? error.code : 'engine_failed'; }
-const explanations = { cancelled: 'Остановлено. Поздний результат будет проигнорирован.', asset_missing: 'Не удалось загрузить ресурс движка со стенда.', asset_invalid: 'Ресурс повреждён или имеет неподдерживаемый формат.', canvas_worker_unavailable: 'В этой среде Worker не может создать OffscreenCanvas 2D. Это ограничение браузера, а не отсутствие камеры.', wasm_unsupported: 'Браузер не смог скомпилировать или запустить WASM этого движка.', worker_failed: 'Worker не смог запуститься или завершился.', engine_failed: 'Движок завершил операцию с ошибкой.', initialization_timeout: 'Подготовка движка превысила 60 секунд.', deadline: 'Истёк бюджет распознавания.', api_missing: 'Браузер не предоставляет нужные API.', frame_invalid: 'Не удалось подготовить кадр.', image_too_large: 'Изображение превышает установленный бюджет JPEG.' };
+function codeOf(error) {
+  const known = { ImageBudgetError: 'image_too_large', FrameError: 'frame_invalid', JpegError: 'frame_invalid', MultipartError: 'frame_invalid', SettingsError: 'settings_invalid' };
+  if (known[error?.name]) return known[error.name];
+  return error?.code && ['cancelled', 'asset_missing', 'asset_invalid', 'canvas_worker_unavailable', 'wasm_unsupported', 'worker_failed', 'engine_failed', 'initialization_timeout', 'deadline', 'api_missing', 'frame_invalid', 'image_too_large', 'settings_invalid', 'permission_denied', 'camera_busy', 'device_missing', 'playback_blocked'].includes(error.code) ? error.code : 'engine_failed'; }
+const explanations = { settings_invalid: 'Проверьте параметры JPEG, интервала и дедлайна: одно из значений вне допустимого диапазона.', permission_denied: 'Камера не разрешена браузером, ОС или политикой запуска. Проверьте подробности над превью.', camera_busy: 'Камера занята или недоступна для браузера.', device_missing: 'Браузер не нашёл доступную камеру.', playback_blocked: 'Поток получен, но превью не начало воспроизводиться.', cancelled: 'Остановлено. Поздний результат будет проигнорирован.', asset_missing: 'Не удалось загрузить ресурс движка со стенда.', asset_invalid: 'Ресурс повреждён или имеет неподдерживаемый формат.', canvas_worker_unavailable: 'В этой среде Worker не может создать OffscreenCanvas 2D. Это ограничение браузера, а не отсутствие камеры.', wasm_unsupported: 'Браузер не смог скомпилировать или запустить WASM этого движка.', worker_failed: 'Worker не смог запуститься или завершился.', engine_failed: 'Движок завершил операцию с ошибкой.', initialization_timeout: 'Подготовка движка превысила 60 секунд.', deadline: 'Истёк бюджет распознавания.', api_missing: 'Браузер не предоставляет нужные API.', frame_invalid: 'Не удалось подготовить кадр.', image_too_large: 'Изображение превышает установленный бюджет JPEG.' };
 
 function controls() {
   const busy = !!owner;
@@ -266,6 +269,7 @@ async function runSuite() {
 function updateSuiteSummary() {
   $('suiteSummary').textContent = ENGINE_IDS.map(id => { const rows = suiteRows.filter(row => row.engineId === id); return ENGINE_LABELS[id] + ': точно ' + rows.filter(row => row.expectedMatch).length + '/16; выполнено ' + rows.filter(row => row.expectedMatch !== null).length; }).join(' · ') + ' · всего ' + suiteRows.length + '/48. Confidence между движками не сравнивается.';
 }
+function cameraReason(name) { return { NotAllowedError: 'permission_denied', SecurityError: 'permission_denied', NotReadableError: 'camera_busy', TrackStartError: 'camera_busy', NotFoundError: 'device_missing', VideoTimeoutError: 'playback_blocked' }[name] || 'api_missing'; }
 function markEngineError(id, code) { engineChecks.set(id + '.operation', { id: id + '.operation', status: 'blocked', reasonCode: code, facts: {} }); record('engine.failed', owner, code); }
 
 async function freeze() {
@@ -314,7 +318,7 @@ async function runLive() {
     run.metrics.initializationMs = await initialize(context, engineId);
     state('Движок готов. Ожидается разрешение камеры; это ожидание не входит в попытку.', context);
     await bounded(baseline.openCamera(), context.controller.signal, null, 'deadline'); requireCurrent(context);
-    if (!baseline.isLive()) throw fault('api_missing');
+    if (!baseline.isLive()) throw fault(cameraReason(baseline.snapshot().environment.lastCameraError?.name));
     const started = performance.now(); const deadline = started + context.settings.sessionTimeoutSeconds * 1000;
     const consensus = { sourceTime: -1, candidate: null, matches: 0 }; let lastStart = -Infinity;
     while (true) {
@@ -368,9 +372,16 @@ async function nativeLive(context, run) {
         state('Модели готовы. Ожидается камера; можно отменить штатной кнопкой закрытия.', context);
       }
       if (event.detail.state === 'scanning' && started === null) {
+        engineChecks.set('vin-scanner.camera', { id: 'vin-scanner.camera', status: 'pass', reasonCode: 'ok', facts: {} });
         started = performance.now(); state('Полный native vin-scanner · decoder ' + element.decoder + ' · 200 мс · собственный консенсус.', context);
         context.deadlineTimer = setTimeout(() => done(reject, fault('deadline')), context.settings.sessionTimeoutSeconds * 1000);
       }
+    });
+    element.addEventListener('scan-camera-error', event => {
+      if (!current(context)) return;
+      const reason = cameraReason(event.detail.name);
+      engineChecks.set('vin-scanner.camera', { id: 'vin-scanner.camera', status: 'blocked', reasonCode: reason, facts: {} });
+      state(explanations[reason], context);
     });
     element.addEventListener('scan-vin-found', event => {
       if (!current(context) || started === null || performance.now() >= started + context.settings.sessionTimeoutSeconds * 1000) return;

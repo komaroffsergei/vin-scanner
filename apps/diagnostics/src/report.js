@@ -49,7 +49,12 @@ export function buildSafeReport({ info, snapshot, settings, network, runs, engin
       blobResourceReads: 0, observedHttpAttempts: network.staticResourceRequests + network.blockedAttempts,
       staticResourceRequests: network.staticResourceRequests, blockedAttempts: network.blockedAttempts,
       externalVerification: 'not_performed', evidenceSource: 'application_only' },
-    deviceChecks: snapshot.checks.map(check => checkRecord(check.id.toLowerCase(), check.status, check.values)),
+    deviceChecks: snapshot.checks.map(check => {
+      const result = checkRecord(check.id.toLowerCase(), check.status, check.values);
+      if (check.id === 'secure' && check.status === 'blocked') result.reasonCode = 'insecure_context';
+      if (check.id === 'camera' && check.status === 'blocked') result.reasonCode = { NotAllowedError: 'permission_denied', SecurityError: 'permission_denied', NotReadableError: 'camera_busy', NotFoundError: 'device_missing', VideoTimeoutError: 'playback_blocked' }[snapshot.environment.lastCameraError?.name] || 'api_missing';
+      return result;
+    }),
     logicChecks: snapshot.selfTests.map((test, index) => checkRecord('mock.case-' + (index + 1), test.pass === null ? 'untested' : test.pass ? 'pass' : 'fail', { elapsedMs: test.elapsedMs })),
     engineChecks: [...engineChecks.values()].map(check => ({ ...checkRecord(check.id, check.status, check.facts), reasonCode: check.reasonCode })),
     manualChecks: snapshot.manual.map(([id, value]) => checkRecord(id, value)),
