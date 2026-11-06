@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-06T00:00:00Z",
+  "buildId": "spec-example-not-an-execution",
+  "environment": {
+    "protocol": "file:",
+    "secureContext": false,
+    "userAgent": "Example only",
+    "viewportWidth": 390,
+    "viewportHeight": 844,
+    "hardwareConcurrency": null
+  },
+  "settings": {
+    "captureIntervalMs": 750,
+    "sessionTimeoutSeconds": 30,
+    "image": {
+      "maxDimension": 1280,
+      "jpegQuality": 0.8,
+      "maxBytes": 1500000
+    }
+  },
+  "network": {
+    "policy": "same-origin-static-assets",
+    "virtualOperations": 0,
+    "blobResourceReads": 0,
+    "observedHttpAttempts": 0,
+    "blockedAttempts": 0,
+    "externalVerification": "not_performed",
+    "evidenceSource": "application_only",
+    "staticResourceRequests": 0
+  },
+  "deviceChecks": [
+    {
+      "id": "camera",
+      "status": "untested",
+      "reasonCode": "not_run",
+      "facts": {}
+    }
+  ],
+  "logicChecks": [],
+  "engineChecks": [],
+  "manualChecks": [
+    {
+      "id": "phone.rotation",
+      "status": "manual",
+      "reasonCode": "manual_required",
+      "facts": {}
+    }
+  ],
+  "runs": [],
+  "events": [],
+  "limitations": [
+    "physical_phone_acceptance_pending",
+    "no_backend_or_authorization_test"
+  ],
+  "testSuite": {
+    "suiteId": "vin-synthetic-v1",
+    "cases": []
+  }
+}

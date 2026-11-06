@@ -21,8 +21,14 @@ const RELAXED_CONSTRAINTS = {
  * @returns {Promise<MediaStream>}
  * @throws {DOMException}
  */
-export async function openCameraStream() {
-  const stream = await getUserMediaWithFallback();
+export async function openCameraStream({ isCurrent = () => true, onAcquired = () => {} } = {}) {
+  const stream = await getUserMediaWithFallback(isCurrent);
+  if (!isCurrent()) {
+    stopCameraStream(stream);
+    throw Object.assign(new Error("Camera request cancelled"), { name: "AbortError" });
+  }
+  // Publish ownership before the optional focus await so close() can stop tracks immediately.
+  onAcquired(stream);
   const [track] = stream.getVideoTracks();
   // Continuous focus where supported (ignored elsewhere).
   try {
@@ -42,11 +48,11 @@ export async function openCameraStream() {
  * open. Other errors (denied, not found, in use) propagate unchanged.
  * @returns {Promise<MediaStream>}
  */
-async function getUserMediaWithFallback() {
+async function getUserMediaWithFallback(isCurrent) {
   try {
     return await navigator.mediaDevices.getUserMedia(CONSTRAINTS);
   } catch (error) {
-    if (error?.name === "OverconstrainedError") {
+    if (error?.name === "OverconstrainedError" && isCurrent()) {
       return navigator.mediaDevices.getUserMedia(RELAXED_CONSTRAINTS);
     }
     throw error;

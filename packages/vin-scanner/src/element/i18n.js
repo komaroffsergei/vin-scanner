@@ -1,9 +1,24 @@
 /**
- * Minimal UI strings for the scanner overlay (10 locales, mirroring the
- * host app's supported languages). Fallback locale: en.
+ * Minimal UI strings for the scanner overlay, including Russian diagnostics.
+ * Existing locales are preserved. Fallback locale: en.
  */
 
 const LOCALES = {
+  ru: {
+    loading: "Загрузка моделей…",
+    aim: "Наведите рамку на VIN",
+    processing: "Распознавание…",
+    hintCloser: "Поднесите камеру ближе или добавьте свет",
+    notFound: "VIN не найден. Попробуйте ещё раз.",
+    cameraDenied: "Доступ к камере запрещён. Проверьте разрешения браузера.",
+    cameraError: "Не удалось запустить превью камеры.",
+    cameraNotFound: "Камера не найдена.",
+    cameraInUse: "Камера занята другим приложением. Закройте его и повторите.",
+    retry: "Повторить",
+    closeAria: "Закрыть сканер",
+    shutterAria: "Снять кадр",
+    torchAria: "Фонарик",
+  },
   en: {
     loading: "Loading models…",
     aim: "Aim the frame at the VIN",

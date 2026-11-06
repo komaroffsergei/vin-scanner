@@ -133,6 +133,10 @@ export class VinScanner extends BaseElement {
   #torchOn = false;
   #hintTimer = 0;
   #openPromise = null;
+  #generation = 0;
+  #rejectInit = null;
+  #cameraOpening = false;
+  #cancelPlayback = null;
   #t = createT("en");
 
   #video;
@@ -195,14 +199,15 @@ export class VinScanner extends BaseElement {
    */
   open() {
     if (this.#openPromise) return this.#openPromise;
-    this.#openPromise = this.#doOpen().catch((error) => {
-      this.close();
+    const generation = ++this.#generation;
+    this.#openPromise = this.#doOpen(generation).catch((error) => {
+      if (generation === this.#generation) this.close();
       throw error;
     });
     return this.#openPromise;
   }
 
-  async #doOpen() {
+  async #doOpen(generation) {
     const support = checkSupport();
     if (!support.supported) {
       this.#emit("scan-model-error", { message: `Unsupported: ${support.missing.join(", ")}` });
@@ -215,11 +220,12 @@ export class VinScanner extends BaseElement {
     this.#progressEl.hidden = false;
     this.#progressEl.textContent = this.#t("loading");
 
-    await this.#startWorker();
+    await this.#startWorker(generation);
+    if (generation !== this.#generation || document.hidden) return support;
 
     // Camera failure keeps the overlay open with a retry affordance (see
     // #startCamera) rather than tearing everything down.
-    await this.#startCamera();
+    await this.#startCamera(generation);
 
     return support;
   }
@@ -230,18 +236,55 @@ export class VinScanner extends BaseElement {
    * worker) intact, so retry re-acquires the camera without reloading models.
    * @returns {Promise<boolean>} whether the camera started.
    */
-  async #startCamera() {
+  async #startCamera(generation = this.#generation) {
+    if (this.#cameraOpening) return false;
+    this.#cameraOpening = true;
     this.#setState(STATE.REQUESTING_CAMERA);
     this.#hideCameraError();
+    let acquired;
     try {
-      this.#stream = await openCameraStream();
+      acquired = await openCameraStream({
+        isCurrent: () => generation === this.#generation && !document.hidden,
+        onAcquired: (stream) => { this.#stream = stream; },
+      });
+      if (generation !== this.#generation || document.hidden) {
+        stopCameraStream(acquired);
+        return false;
+      }
+      this.#stream = acquired;
+      this.#video.srcObject = acquired;
+      await new Promise((resolve, reject) => {
+        let settled = false;
+        const finish = (callback, value) => {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timer);
+          if (this.#cancelPlayback === cancel) this.#cancelPlayback = null;
+          callback(value);
+        };
+        const cancel = () => finish(reject, Object.assign(new Error("Playback cancelled"), { name: "AbortError" }));
+        this.#cancelPlayback = cancel;
+        const timer = setTimeout(() => finish(reject, new Error("Camera playback timeout")), 8000);
+        Promise.resolve(this.#video.play()).then(() => finish(resolve), (error) => finish(reject, error));
+      });
+      if (generation !== this.#generation) {
+        stopCameraStream(acquired);
+        return false;
+      }
     } catch (error) {
+      stopCameraStream(acquired);
+      if (generation !== this.#generation) return false;
+      this.#stream = null;
+      this.#video.srcObject = null;
       this.#showCameraError(error);
       return false;
+    } finally {
+      if (generation === this.#generation) this.#cameraOpening = false;
     }
 
-    this.#video.srcObject = this.#stream;
-    await this.#video.play().catch(() => {});
+    acquired.getVideoTracks()[0]?.addEventListener("ended", () => {
+      if (generation === this.#generation) this.close();
+    }, { once: true });
     this.#torchBtn.hidden = !torchSupported(this.#stream);
 
     this.#progressEl.hidden = true;
@@ -291,6 +334,11 @@ export class VinScanner extends BaseElement {
    * tracks, cancel loops, null refs. Always safe to call.
    */
   close() {
+    this.#generation++;
+    this.#cameraOpening = false;
+    this.#cancelPlayback?.();
+    this.#rejectInit?.(Object.assign(new Error("Scanner closed"), { name: "AbortError" }));
+    this.#rejectInit = null;
     this.#openPromise = null;
     cancelAnimationFrame(this.#rafId);
     clearTimeout(this.#hintTimer);
@@ -324,21 +372,26 @@ export class VinScanner extends BaseElement {
     }
   }
 
-  #startWorker() {
+  #startWorker(generation) {
     return new Promise((resolve, reject) => {
+      this.#rejectInit = reject;
       const worker = new Worker(new URL("../worker/scanner.worker.js", import.meta.url), {
         type: "module",
       });
       this.#worker = worker;
 
       worker.onmessage = (event) => {
+        if (generation !== this.#generation || worker !== this.#worker) return;
         const msg = event.data;
-        if (msg.type === MSG.PROGRESS) {
+        if (msg.type === "diagnostics-resources") {
+          this.#emit("scan-resource-observed", { count: msg.count });
+        } else if (msg.type === MSG.PROGRESS) {
           this.#emit("scan-model-progress", { loaded: msg.loaded, total: msg.total });
           this.#updateProgress(msg.loaded, msg.total);
         } else if (msg.type === MSG.READY) {
           /** Which decoder the worker runs: "beam" (n-gram loaded) or "greedy". */
           this.decoder = msg.decoder ?? "greedy";
+          this.#rejectInit = null;
           resolve();
         } else if (msg.type === MSG.INIT_ERROR) {
           this.#emit("scan-model-error", { message: msg.message });
@@ -351,6 +404,7 @@ export class VinScanner extends BaseElement {
         }
       };
       worker.onerror = (event) => {
+        if (generation !== this.#generation || worker !== this.#worker) return;
         const message = event.message ?? "Worker error";
         this.#emit("scan-model-error", { message });
         reject(new Error(message));
@@ -388,9 +442,12 @@ export class VinScanner extends BaseElement {
   }
 
   async #captureFrame(ts) {
+    const generation = this.#generation;
     this.#frameInFlight = true;
+    let bitmap;
     try {
-      const bitmap = await createImageBitmap(this.#video);
+      bitmap = await createImageBitmap(this.#video);
+      if (generation !== this.#generation || !this.#worker) { bitmap.close(); return; }
       const manual = this.#manualFramesLeft > 0;
       if (manual) this.#manualFramesLeft -= 1;
       this.#worker?.postMessage(
@@ -404,7 +461,8 @@ export class VinScanner extends BaseElement {
         [bitmap]
       );
     } catch {
-      this.#frameInFlight = false;
+      bitmap?.close();
+      if (generation === this.#generation) this.#frameInFlight = false;
     }
   }
 
@@ -444,7 +502,10 @@ export class VinScanner extends BaseElement {
   }
 
   async #onTorchToggle() {
-    this.#torchOn = await setTorch(this.#stream, !this.#torchOn);
+    const generation = this.#generation;
+    const enabled = await setTorch(this.#stream, !this.#torchOn);
+    if (generation !== this.#generation) return;
+    this.#torchOn = enabled;
     this.#torchBtn.classList.toggle("on", this.#torchOn);
   }
 

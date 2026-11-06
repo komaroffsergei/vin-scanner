@@ -1,0 +1,498 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "VIN recognition virtual browser contract",
+    "version": "1.0.0",
+    "description": "SPECIFICATION ONLY. In-memory operations, no server and no Try-it-out calls."
+  },
+  "servers": [
+    {
+      "url": "https://virtual.invalid/bff-b2bweb",
+      "description": "Reserved invalid host; never execute."
+    }
+  ],
+  "x-transport": "in-memory",
+  "x-runtime-network-allowed": false,
+  "x-display-base": "https://my-dev.tiss.ru/bff-b2bweb/v1/vin-recognition",
+  "paths": {
+    "/v1/vin-recognition/config": {
+      "get": {
+        "operationId": "virtualConfig",
+        "responses": {
+          "200": {
+            "description": "Virtual response in memory; no HTTP request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Config"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/vin-recognition/sessions/{sessionId}": {
+      "parameters": [
+        {
+          "name": "sessionId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+          }
+        }
+      ],
+      "post": {
+        "operationId": "virtualCreateSession",
+        "description": "No request body. Repeating the same sessionId does not reset settings/deadline.",
+        "responses": {
+          "200": {
+            "description": "Virtual response in memory; no HTTP request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Virtual response in memory; no HTTP request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "virtualCancelSession",
+        "description": "No body. Empty 200, idempotent, fire-and-forget. Preserve terminal outcome.",
+        "responses": {
+          "200": {
+            "description": "Empty virtual response; no content."
+          }
+        }
+      }
+    },
+    "/v1/vin-recognition/sessions/{sessionId}/frames": {
+      "parameters": [
+        {
+          "name": "sessionId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+          }
+        }
+      ],
+      "post": {
+        "operationId": "virtualProcessFrame",
+        "description": "One frame in flight. Repeated frameId returns cached response. Never calls fetch.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "frameId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "JPEG Blob, filename vin.jpg. maxBytes enforced against Blob.size."
+                  }
+                },
+                "required": [
+                  "frameId",
+                  "image"
+                ]
+              },
+              "encoding": {
+                "image": {
+                  "contentType": "image/jpeg"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Virtual response in memory; no HTTP request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Frame"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Virtual response in memory; no HTTP request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Simulated unavailable provider, not a real HTTP error."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Settings": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "captureIntervalMs": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 60000
+          },
+          "sessionTimeoutSeconds": {
+            "type": "number",
+            "minimum": 0.1,
+            "maximum": 300
+          },
+          "image": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "maxDimension": {
+                "type": "integer",
+                "minimum": 32,
+                "maximum": 4096
+              },
+              "jpegQuality": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "maxBytes": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 20000000
+              }
+            },
+            "required": [
+              "maxDimension",
+              "jpegQuality",
+              "maxBytes"
+            ]
+          }
+        },
+        "required": [
+          "captureIntervalMs",
+          "sessionTimeoutSeconds",
+          "image"
+        ]
+      },
+      "Status": {
+        "enum": [
+          "Searching",
+          "NeedBetterFrame",
+          "Candidate",
+          "Recognized",
+          "NoVin",
+          "TimedOut",
+          "LimitExceeded",
+          "Disabled",
+          "ProviderUnavailable",
+          "Cancelled"
+        ]
+      },
+      "Config": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "allowed": {
+            "type": "boolean"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "available": {
+            "type": "boolean"
+          },
+          "settings": {
+            "$ref": "#/components/schemas/Settings"
+          }
+        },
+        "required": [
+          "allowed",
+          "enabled",
+          "available",
+          "settings"
+        ]
+      },
+      "Session": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          },
+          "terminal": {
+            "type": "boolean"
+          },
+          "remainingMs": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "settings": {
+            "$ref": "#/components/schemas/Settings"
+          }
+        },
+        "required": [
+          "sessionId",
+          "status",
+          "terminal",
+          "remainingMs",
+          "settings"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "enum": [
+                    "Recognized",
+                    "NoVin",
+                    "TimedOut",
+                    "LimitExceeded",
+                    "Disabled",
+                    "ProviderUnavailable",
+                    "Cancelled"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "terminal": {
+                  "const": true
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "terminal": {
+                  "const": false
+                }
+              }
+            }
+          }
+        ]
+      },
+      "Frame": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+          },
+          "frameId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          },
+          "terminal": {
+            "type": "boolean"
+          },
+          "vin": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-HJ-NPR-Z0-9]{17}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "remainingMs": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "nextCaptureAfterMs": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reasonCode": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "sessionId",
+          "frameId",
+          "status",
+          "terminal",
+          "vin",
+          "remainingMs",
+          "nextCaptureAfterMs",
+          "reasonCode"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "Recognized"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "vin": {
+                  "type": "string",
+                  "pattern": "^[A-HJ-NPR-Z0-9]{17}$"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "vin": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "enum": [
+                    "Recognized",
+                    "NoVin",
+                    "TimedOut",
+                    "LimitExceeded",
+                    "Disabled",
+                    "ProviderUnavailable",
+                    "Cancelled"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "terminal": {
+                  "const": true
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "terminal": {
+                  "const": false
+                }
+              }
+            }
+          }
+        ]
+      },
+      "ValidationError": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "propertyName": {
+                  "type": "string"
+                },
+                "errorMessage": {
+                  "type": "string"
+                },
+                "errorCode": {
+                  "enum": [
+                    "VinRecognitionFrameInProgress",
+                    "VinRecognitionFrameTooEarly",
+                    "VinRecognitionForbidden",
+                    "VinRecognitionSessionNotFound",
+                    "VinRecognitionImageInvalid",
+                    "VinRecognitionImageTooLarge"
+                  ]
+                }
+              },
+              "required": [
+                "propertyName",
+                "errorMessage",
+                "errorCode"
+              ]
+            }
+          }
+        },
+        "required": [
+          "messages",
+          "errors"
+        ]
+      }
+    }
+  }
+}

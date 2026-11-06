@@ -1,0 +1,203 @@
+{
+  "suiteId": "vin-synthetic-v1",
+  "seed": "0x77107731",
+  "font": {
+    "name": "DejaVu Sans Mono Bold",
+    "sha256": "bce60f1b4421acd9ea51ba6623d7024ecbe6817a953e3654df62a5e6bdf8f769",
+    "license": "DejaVu Fonts / Bitstream Vera"
+  },
+  "cases": [
+    {
+      "caseId": "vin1-clean",
+      "expected": "1HGKU5KP3XA942506",
+      "width": 1280,
+      "height": 240,
+      "noiseSigma": 0,
+      "stretchX": 1,
+      "seed": 2058485356,
+      "file": "fixtures/vin1-clean.png",
+      "sha256": "4b5f0ce8edf882f6337f61c08e4109cc4f7d4585a2b3b01c37450d236ffd72d4",
+      "bytes": 23888
+    },
+    {
+      "caseId": "vin1-noise",
+      "expected": "1HGKU5KP3XA942506",
+      "width": 1280,
+      "height": 240,
+      "noiseSigma": 8,
+      "stretchX": 1,
+      "seed": 3942106770,
+      "file": "fixtures/vin1-noise.png",
+      "sha256": "544a9abcfd74a98b6144fca28c7b386efde618d68fc055966ea96a47ecef9357",
+      "bytes": 496676
+    },
+    {
+      "caseId": "vin1-stretch",
+      "expected": "1HGKU5KP3XA942506",
+      "width": 1280,
+      "height": 240,
+      "noiseSigma": 0,
+      "stretchX": 0.65,
+      "seed": 1452572544,
+      "file": "fixtures/vin1-stretch.png",
+      "sha256": "6afb4d8b603a59e1d352b3bb9ce82b08aee5e3971c0082a1fdb88a0a2ab68cf6",
+      "bytes": 21476
+    },
+    {
+      "caseId": "vin1-combined",
+      "expected": "1HGKU5KP3XA942506",
+      "width": 1280,
+      "height": 240,
+      "noiseSigma": 8,
+      "stretchX": 0.65,
+      "seed": 4125521266,
+      "file": "fixtures/vin1-combined.png",
+      "sha256": "9eceb7d88488a0b866425f229af75b37c7e1c03582cce10d09bc035d05a5df0b",
+      "bytes": 496498
+    },
+    {
+      "caseId": "vin2-clean",
+      "expected": "JHMLSGR48PP154204",
+      "width": 1280,
+      "height": 240,
+      "noiseSigma": 0,
+      "stretchX": 1,
+      "seed": 3377468107,
+      "file": "fixtures/vin2-clean.png",
+      "sha256": "6eb1eb515f8f2d5e11d9f0b44541221ac9d82825a40a88b8cae174e4bfbfa437",
+      "bytes": 20476
+    },
+    {
+      "caseId": "vin2-noise",
+      "expected": "JHMLSGR48PP154204",
+      "width": 1280,
+      "height": 240,
+      "noiseSigma": 16,
+      "stretchX": 1,
+      "seed": 2855009967,
+      "file": "fixtures/vin2-noise.png",
+      "sha256": "cdbd975ba050255adccf17a6c5d6c1de9f8d0d49a697991e8f6356fd8f566f4e",
+      "bytes": 556263
+    },
+    {
+      "caseId": "vin2-stretch",
+      "expected": "JHMLSGR48PP154204",
+      "width": 1280,
+      "height": 240,
+      "noiseSigma": 0,
+      "stretchX": 0.85,
+      "seed": 1781595728,
+      "file": "fixtures/vin2-stretch.png",
+      "sha256": "b24efc64b49c92d3a35a9aef8b59dd78b7d80e3292aa58009d52cabcf1557283",
+      "bytes": 19324
+    },
+    {
+      "caseId": "vin2-combined",
+      "expected": "JHMLSGR48PP154204",
+      "width": 1280,
+      "height": 240,
+      "noiseSigma": 16,
+      "stretchX": 0.85,
+      "seed": 3399635213,
+      "file": "fixtures/vin2-combined.png",
+      "sha256": "d2adb2f72668aede5dca500ee242f25a04c50fcc8c3f197ae62ed930bf5441f4",
+      "bytes": 560271
+    },
+    {
+      "caseId": "vin3-clean",
+      "expected": "WVWVNV661DP597932",
+      "width": 1280,
+      "height": 240,
+      "noiseSigma": 0,
+      "stretchX": 1,
+      "seed": 3340139346,
+      "file": "fixtures/vin3-clean.png",
+      "sha256": "dec5f43f553d0cda7a981bffaf927aee56571109e772d3f1dad85e58351fa4f7",
+      "bytes": 24621
+    },
+    {
+      "caseId": "vin3-noise",
+      "expected": "WVWVNV661DP597932",
+      "width": 1280,
+      "height": 240,
+      "noiseSigma": 24,
+      "stretchX": 1,
+      "seed": 133944044,
+      "file": "fixtures/vin3-noise.png",
+      "sha256": "aca66ffaf961661235c8955e845fb8291e4c850a78cb4805d21acb0f801ca915",
+      "bytes": 563381
+    },
+    {
+      "caseId": "vin3-stretch",
+      "expected": "WVWVNV661DP597932",
+      "width": 1280,
+      "height": 240,
+      "noiseSigma": 0,
+      "stretchX": 1.25,
+      "seed": 3379293151,
+      "file": "fixtures/vin3-stretch.png",
+      "sha256": "68356dd1b253c38e5c5884f2fb0f717d084dea665335fbb57053c1e3cb7be022",
+      "bytes": 28701
+    },
+    {
+      "caseId": "vin3-combined",
+      "expected": "WVWVNV661DP597932",
+      "width": 1280,
+      "height": 240,
+      "noiseSigma": 24,
+      "stretchX": 1.25,
+      "seed": 907701047,
+      "file": "fixtures/vin3-combined.png",
+      "sha256": "ee30d6a04b0013668100658e4cde42645178957da8f4932981301288048ab2ad",
+      "bytes": 567047
+    },
+    {
+      "caseId": "vin4-clean",
+      "expected": "XTACMDBF0SS112985",
+      "width": 1280,
+      "height": 240,
+      "noiseSigma": 0,
+      "stretchX": 1,
+      "seed": 538383236,
+      "file": "fixtures/vin4-clean.png",
+      "sha256": "dd45dd82b3c6407e8a31d112e4941f0c15178fb06927383e59335379182f97a2",
+      "bytes": 23807
+    },
+    {
+      "caseId": "vin4-noise",
+      "expected": "XTACMDBF0SS112985",
+      "width": 1280,
+      "height": 240,
+      "noiseSigma": 32,
+      "stretchX": 1,
+      "seed": 2392433751,
+      "file": "fixtures/vin4-noise.png",
+      "sha256": "7d17fed083a7dba461e618c14292bc96f5c52dd9bdc25de0972586cff16acebd",
+      "bytes": 566503
+    },
+    {
+      "caseId": "vin4-stretch",
+      "expected": "XTACMDBF0SS112985",
+      "width": 1280,
+      "height": 240,
+      "noiseSigma": 0,
+      "stretchX": 1.6,
+      "seed": 4168102558,
+      "file": "fixtures/vin4-stretch.png",
+      "sha256": "492178c4c53f3c4803f231b4a7b5c017983d17ac6d1672e6cf7d2de23d8b6adb",
+      "bytes": 26847
+    },
+    {
+      "caseId": "vin4-combined",
+      "expected": "XTACMDBF0SS112985",
+      "width": 1280,
+      "height": 240,
+      "noiseSigma": 32,
+      "stretchX": 1.6,
+      "seed": 978467951,
+      "file": "fixtures/vin4-combined.png",
+      "sha256": "c6b20f1955fc24f83d4ad82738e2fc12e3ac1c1922fb5b195d69365deea565f3",
+      "bytes": 566419
+    }
+  ]
+}

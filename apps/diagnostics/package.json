@@ -1,0 +1,26 @@
+{
+  "name": "@vin-scanner/diagnostics",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "assets": "python scripts/prepare-assets.py",
+    "fixtures": "node scripts/generate-fixtures.mjs",
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/serve.mjs",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "@paddleocr/paddleocr-js": "0.4.2",
+    "@tesseract.js-data/eng": "1.0.0",
+    "ort-paddle": "npm:onnxruntime-web@1.24.3",
+    "tesseract.js": "7.0.0",
+    "tesseract.js-core": "7.0.0",
+    "vin-scanner": "*"
+  },
+  "devDependencies": {
+    "ajv": "8.17.1",
+    "ajv-formats": "3.0.1",
+    "playwright": "1.62.1",
+    "vite": "6.4.1"
+  }
+}
